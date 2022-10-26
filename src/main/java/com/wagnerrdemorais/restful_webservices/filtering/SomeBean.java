@@ -1,5 +1,6 @@
 package com.wagnerrdemorais.restful_webservices.filtering;
 
+import com.fasterxml.jackson.annotation.JsonFilter;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
@@ -7,13 +8,19 @@ import lombok.Data;
 
 @Data
 @AllArgsConstructor
-@JsonIgnoreProperties("field1")
+//@JsonIgnoreProperties("field1")
+//@JsonFilter("myFilter")
 public class SomeBean {
 
-    private String field1;
+    String field1;
 
-    @JsonIgnore
-    private String field3;
+//    @JsonIgnore
+    String field2;
 
-    private String field2;
+    String field3;
+
+    String field4;
+
+    String field5;
+
 }
