@@ -11,6 +11,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -57,5 +58,11 @@ public class UserJpaResource {
     public ResponseEntity<Object> delete(@PathVariable Integer id) {
         userRepository.deleteById(id);
         return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/jpa/users/{id}/posts")
+    public List<Post> getUserPosts(@PathVariable Integer id) {
+        Optional<User> user = userRepository.findById(id);
+        return user.orElseThrow().getPosts();
     }
 }

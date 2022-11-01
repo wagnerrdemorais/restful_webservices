@@ -3,7 +3,7 @@ package com.wagnerrdemorais.restful_webservices.user;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
-@Entity
+@Entity(name = "post")
 public class Post {
 
     @Id
