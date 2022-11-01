@@ -2,8 +2,13 @@ package com.wagnerrdemorais.restful_webservices.user;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
+import lombok.Getter;
+import lombok.Setter;
 
 @Entity(name = "post")
+@Getter
+@Setter
 public class Post {
 
     @Id
@@ -14,21 +19,7 @@ public class Post {
     @JsonIgnore
     private User user;
 
+    @Size(min = 10, message = "Should be at least 10 characters.")
     private String description;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public String getDescription() {
-        return description;
-    }
-
-    public void setDescription(String description) {
-        this.description = description;
-    }
 }

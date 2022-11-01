@@ -1,8 +1,10 @@
 package com.wagnerrdemorais.restful_webservices.user;
 
 import com.wagnerrdemorais.restful_webservices.exception.UserNotFoundException;
+import com.wagnerrdemorais.restful_webservices.jpa.PostRepository;
 import com.wagnerrdemorais.restful_webservices.jpa.UserRepository;
 import jakarta.validation.Valid;
+import lombok.AllArgsConstructor;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.server.mvc.WebMvcLinkBuilder;
 import org.springframework.http.ResponseEntity;
@@ -16,14 +18,11 @@ import java.util.Optional;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @RestController
+@AllArgsConstructor
 public class UserJpaResource {
 
-
     private final UserRepository userRepository;
-
-    public UserJpaResource(UserRepository userRepository) {
-        this.userRepository = userRepository;
-    }
+    private final PostRepository postRepository;
 
     @GetMapping("/jpa/users")
     public List<User> getUsers() {
@@ -63,6 +62,24 @@ public class UserJpaResource {
     @GetMapping("/jpa/users/{id}/posts")
     public List<Post> getUserPosts(@PathVariable Integer id) {
         Optional<User> user = userRepository.findById(id);
-        return user.orElseThrow().getPosts();
+        return user.orElseThrow(() -> new UserNotFoundException("User Not found")).getPosts();
+    }
+
+    @PostMapping("/jpa/users/{id}/posts")
+    public ResponseEntity<Object> createPostForUser(@PathVariable Integer id, @Valid @RequestBody Post post) {
+        Optional<User> userById = userRepository.findById(id);
+
+        User user = userById.orElseThrow(() -> new UserNotFoundException("User Not found"));
+        post.setUser(user);
+
+        Post savedPost = postRepository.save(post);
+
+        URI location = ServletUriComponentsBuilder
+                .fromCurrentRequest()
+                .path("/{id}")
+                .buildAndExpand(savedPost.getId())
+                .toUri();
+
+        return ResponseEntity.created(location).build();
     }
 }
